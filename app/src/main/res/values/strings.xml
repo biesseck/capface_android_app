@@ -4,13 +4,13 @@
     <string name="action_settings">Configurações</string>
 
     <string-array name="disciplinas">
-        <item>Shuttle Badminton</item>
-        <item>Tennis</item>
-        <item>FootBall</item>
-        <item>Basket Ball</item>
-        <item>Table Tennis</item>
-        <item>Chess</item>
-        <item>Hockey</item>
+        <item>Programação II</item>
+        <item>Programação III</item>
+        <item>Fundamentos de BD</item>
+        <item>Segurança em Redes</item>
+        <item>Montagem e Manutenção</item>
+        <item>Arquitetura de Comp.</item>
+        <item>Redes de Computadores</item>
     </string-array>
 
 </resources>
