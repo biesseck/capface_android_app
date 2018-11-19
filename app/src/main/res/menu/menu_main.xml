@@ -10,8 +10,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_sobre"
+        android:id="@+id/action_sobre_o_capface"
         android:orderInCategory="101"
-        android:title="Sobre"
+        android:title="Sobre o CapFace"
         app:showAsAction="never" />
 </menu>
