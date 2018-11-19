@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">CapFace</string>
+
     <string name="action_settings">Configurações</string>
+
+    <string-array name="disciplinas">
+        <item>Shuttle Badminton</item>
+        <item>Tennis</item>
+        <item>FootBall</item>
+        <item>Basket Ball</item>
+        <item>Table Tennis</item>
+        <item>Chess</item>
+        <item>Hockey</item>
+    </string-array>
+
 </resources>
