@@ -1,9 +1,13 @@
 package com.example.bernardo.capface;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         inicializarComponentes();
+        requestPermissions();
     }
 
     @Override
@@ -53,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     public void inicializarComponentes() {
         floatingActionButtonAddAula = (FloatingActionButton) findViewById(R.id.floatingActionButtonAddAula);
         floatingActionButtonAddAula.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         alertDialogBuilder = new AlertDialog.Builder(this);
+    }
+
+
+    public void requestPermissions() {
+        boolean permissaoCartaoM = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        boolean permissaoInternet = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == (PackageManager.PERMISSION_GRANTED);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 0);
     }
 
 
