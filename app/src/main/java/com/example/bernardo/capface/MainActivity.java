@@ -1,19 +1,19 @@
 package com.example.bernardo.capface;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton floatingActionButtonAddAula;
+    AlertDialog.Builder alertDialogBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,11 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            abrirActivityConfiguracoesProfessor();
+            this.abrirActivityConfiguracoesProfessor();
+            return true;
+
+        } else if (id == R.id.action_aboutCapface) {
+            this.showAlertDialog_aboutCapface();
             return true;
         }
 
@@ -59,6 +63,24 @@ public class MainActivity extends AppCompatActivity {
                 abrirActivityNovaAula();
             }
         });
+
+        alertDialogBuilder = new AlertDialog.Builder(this);
+    }
+
+
+    public void showAlertDialog_aboutCapface() {
+        alertDialogBuilder.setTitle("Sobre o CapFace");
+        String aboutCapface = "COORDENADOR\nBernardo Biesseck\n\n";
+        aboutCapface += "BOLSISTAS\n";
+        aboutCapface += "Leuri\n";
+        aboutCapface += "Esdras\n";
+        aboutCapface += "Hellen\n";
+        aboutCapface += "Matheus Q.\n";
+        aboutCapface += "Onofre\n";
+        alertDialogBuilder.setMessage(aboutCapface);
+        alertDialogBuilder.setPositiveButton("OK", null);
+        AlertDialog dialog = alertDialogBuilder.create(); // create and show the alert dialog
+        dialog.show();
     }
 
 

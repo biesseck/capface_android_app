@@ -10,7 +10,7 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_sobre_o_capface"
+        android:id="@+id/action_aboutCapface"
         android:orderInCategory="101"
         android:title="Sobre o CapFace"
         app:showAsAction="never" />
