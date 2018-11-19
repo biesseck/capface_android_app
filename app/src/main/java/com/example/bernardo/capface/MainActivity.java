@@ -1,5 +1,6 @@
 package com.example.bernardo.capface;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -65,11 +66,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void abrirActivityConfiguracoesProfessor() {
-        textViewHelloWorld.setText("action_settings");
+        Intent intent = new Intent(this, ActivityConfiguracoes.class);
+        //intent.putExtra("arrayListNomeImagensCapturadas", arrayListNomesImagensCapturadas);
+        //startActivityForResult(intent,ID_ACTIVITY_CONFIG);
+        startActivity(intent);
     }
 
 
     public void abrirActivityNovaAula() {
-        textViewHelloWorld.setText("floatingActionButtonAddAula");
+        Intent intent = new Intent(this, ActivityNovaAula.class);
+        //intent.putExtra("arrayListNomeImagensCapturadas", arrayListNomesImagensCapturadas);
+        //startActivityForResult(intent,ID_ACTIVITY_CONFIG);
+        startActivity(intent);
     }
 }
