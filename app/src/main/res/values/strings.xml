@@ -13,4 +13,16 @@
         <item>Redes de Computadores</item>
     </string-array>
 
+    <string-array name="tipo_disciplina">
+        <item>Bimestral</item>
+        <item>Semestral</item>
+    </string-array>
+
+    <string-array name="image_files">
+        <item>imagem1.jpg</item>
+        <item>imagem2.jpg</item>
+        <item>imagem3.jpg</item>
+        <item>imagem4.jpg</item>
+    </string-array>
+
 </resources>

@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView textViewHelloWorld;
     FloatingActionButton floatingActionButtonAddAula;
 
     @Override
@@ -53,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void inicializarComponentes() {
-        textViewHelloWorld = (TextView) findViewById(R.id.textViewHelloWorld);
-
         floatingActionButtonAddAula = (FloatingActionButton) findViewById(R.id.floatingActionButtonAddAula);
         floatingActionButtonAddAula.setOnClickListener(new View.OnClickListener() {
             @Override
