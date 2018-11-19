@@ -4,15 +4,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.bernardo.capface.entidades.ControllerDisciplinas;
 import com.example.bernardo.capface.entidades.ControllerProfessor;
+import com.example.bernardo.capface.entidades.Disciplina;
 import com.example.bernardo.capface.entidades.Professor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ActivityConfiguracoes extends AppCompatActivity {
 
@@ -23,9 +27,16 @@ public class ActivityConfiguracoes extends AppCompatActivity {
     EditText editTextSenhaQAcademico;
     Button buttonSalvarEditarProfessor;
 
+    EditText editTextNomeDisciplina;
+    EditText editTextCodigoDisciplina;
+    EditText editTextCurso;
+    EditText editTextTurma;
+    EditText editTextTurno;
     ListView listViewDisciplinasCadastradas;
+    Button buttonCadastrarDisciplina;
 
     ControllerProfessor controllerProfessor = new ControllerProfessor();
+    ControllerDisciplinas controllerDisciplinas = ControllerDisciplinas.createControllerDisciplinas();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +45,7 @@ public class ActivityConfiguracoes extends AppCompatActivity {
 
         inicializarComponentes();
         this.carregarDadosProfessor();
+        this.carregarDadosDisciplinas();
     }
 
 
@@ -52,6 +64,14 @@ public class ActivityConfiguracoes extends AppCompatActivity {
             }
         });
 
+
+
+        editTextNomeDisciplina = (EditText) findViewById(R.id.editTextNomeDisciplina);
+        editTextCodigoDisciplina = (EditText) findViewById(R.id.editTextCodigoDisciplina);
+        editTextCurso = (EditText) findViewById(R.id.editTextCurso);
+        editTextTurma = (EditText) findViewById(R.id.editTextTurma);
+        editTextTurno = (EditText) findViewById(R.id.editTextTurno);
+
         listViewDisciplinasCadastradas = (ListView) findViewById(R.id.listViewDisciplinasCadastradas);
         listViewDisciplinasCadastradas.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -60,6 +80,27 @@ public class ActivityConfiguracoes extends AppCompatActivity {
                 return false;
             }
         });
+
+        buttonCadastrarDisciplina = (Button) findViewById(R.id.buttonCadastrarDisciplina);
+        buttonCadastrarDisciplina.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                aoClicarCadastrarDisciplina();
+            }
+        });
+
+    }
+
+
+    public void aoClicarCadastrarDisciplina() {
+        try {
+            Disciplina disciplina = this.getDisciplinaFromFormulario();
+            controllerDisciplinas.addDisciplina(disciplina);
+            this.carregarDadosDisciplinas();
+            this.clearFormularioDisciplina();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -104,6 +145,16 @@ public class ActivityConfiguracoes extends AppCompatActivity {
     }
 
 
+    public void carregarDadosDisciplinas() {
+        try {
+            ArrayList<Disciplina> arrayListDisciplinas = controllerDisciplinas.loadDisciplinas();
+            this.atualizarListViewDisciplinasCadastradas(arrayListDisciplinas);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void disableFormularioProfessor() {
         editTextNomeProfessor.setEnabled(false);
         editTextUserFTP.setEnabled(false);
@@ -122,6 +173,15 @@ public class ActivityConfiguracoes extends AppCompatActivity {
     }
 
 
+    public void clearFormularioDisciplina() {
+        editTextNomeDisciplina.setText("");
+        editTextCodigoDisciplina.setText("");
+        editTextCurso.setText("");
+        editTextTurma.setText("");
+        editTextTurno.setText("");
+    }
+
+
     public Professor getProfessorFromFormulario() {
         Professor professor = new Professor();
         professor.setNome(editTextNomeProfessor.getText().toString());
@@ -133,6 +193,17 @@ public class ActivityConfiguracoes extends AppCompatActivity {
     }
 
 
+    public Disciplina getDisciplinaFromFormulario() {
+        Disciplina disciplina = new Disciplina();
+        disciplina.setNome(editTextNomeDisciplina.getText().toString());
+        disciplina.setCodigo(editTextCodigoDisciplina.getText().toString());
+        disciplina.setCurso(editTextCurso.getText().toString());
+        disciplina.setTurma(editTextTurma.getText().toString());
+        disciplina.setTurno(editTextTurno.getText().toString());
+        return disciplina;
+    }
+
+
     public void popularFormularioProfessor(Professor professor) {
         editTextNomeProfessor.setText(professor.getNome());
         editTextUserFTP.setText(professor.getUserFTP());
@@ -141,6 +212,11 @@ public class ActivityConfiguracoes extends AppCompatActivity {
         editTextSenhaQAcademico.setText(professor.getSenhaQAcademico());
     }
 
+
+    public void atualizarListViewDisciplinasCadastradas(ArrayList<Disciplina> arrayListDisciplinas) {
+        ArrayAdapter<Disciplina> adapter = new ArrayAdapter<Disciplina>(this, android.R.layout.simple_list_item_1, arrayListDisciplinas);
+        listViewDisciplinasCadastradas.setAdapter(adapter);
+    }
 
 
 

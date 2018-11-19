@@ -26,13 +26,15 @@ public class Disciplina {
 
     @Override
     public String toString() {
-        return "Disciplina{" +
-                "nome='" + nome + '\'' +
-                ", codigo='" + codigo + '\'' +
-                ", curso='" + curso + '\'' +
-                ", turma='" + turma + '\'' +
-                ", turno='" + turno + '\'' +
-                '}';
+        String disciplinaString = nome;
+        //disciplinaString += "\nCod.: " + codigo;
+        disciplinaString += "\nCurso: " + curso;
+        return disciplinaString;
+    }
+
+    public String toStringToSave() {
+        String disciplinaString = nome + "," + codigo + "," + curso + "," + turma + "," + turno;
+        return disciplinaString;
     }
 
     public String getNome() {
