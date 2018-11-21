@@ -3,6 +3,11 @@
 
     <string name="action_settings">Configurações</string>
 
+    <string-array name="cursos">
+        <item>Tec-Informatica</item>
+        <item>Sup-Redes</item>
+    </string-array>
+
     <string-array name="disciplinas">
         <item>Programação II</item>
         <item>Programação III</item>
