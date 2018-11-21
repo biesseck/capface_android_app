@@ -171,7 +171,8 @@ public class ActivityNovaAula extends AppCompatActivity {
 
 
     public boolean formularioAulaEstaValido() {
-        if (!editTextDataAula.getText().toString().equals("") &&
+        if (spinnerDisciplina.getSelectedItem() != null &&
+            !editTextDataAula.getText().toString().equals("") &&
             !editTextQtdeAulas.getText().toString().equals("") &&
             !editTextHoraInicioAula.getText().toString().equals("") &&
             !editTextHoraFimAula.getText().toString().equals("")) {

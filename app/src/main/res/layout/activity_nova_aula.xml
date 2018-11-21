@@ -79,7 +79,6 @@
                     android:id="@+id/spinnerDisciplina"
                     android:layout_width="wrap_content"
                     android:layout_height="37dp"
-                    android:entries="@array/disciplinas"
                     android:layout_weight="1" />
             </LinearLayout>
 
