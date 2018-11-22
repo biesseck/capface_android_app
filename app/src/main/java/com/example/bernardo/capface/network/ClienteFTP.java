@@ -1,4 +1,4 @@
-package com.example.bernardo.capface;
+package com.example.bernardo.capface.network;
 
 import android.util.Log;
 

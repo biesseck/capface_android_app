@@ -23,7 +23,10 @@ import android.widget.Toast;
 
 import com.example.bernardo.capface.entidades.ControllerCapturedImages;
 import com.example.bernardo.capface.entidades.ControllerDisciplinas;
+import com.example.bernardo.capface.entidades.ControllerProfessor;
+import com.example.bernardo.capface.entidades.ControllerRegistroAula;
 import com.example.bernardo.capface.entidades.Disciplina;
+import com.example.bernardo.capface.entidades.RegistroAula;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +44,11 @@ public class ActivityNovaAula extends AppCompatActivity {
     Spinner spinnerCursos;
     Spinner spinnerDisciplina;
     Spinner spinnerTipoDisciplina;
+    EditText editTextBimestre;
     EditText editTextDataAula;
     EditText editTextQtdeAulas;
     EditText editTextHoraInicioAula;
+    EditText editTextConteudoAula;
     EditText editTextHoraFimAula;
     Button buttonCamera;
     Button buttonEnviar;
@@ -61,6 +66,7 @@ public class ActivityNovaAula extends AppCompatActivity {
 
     ControllerDisciplinas controllerDisciplinas = ControllerDisciplinas.createControllerDisciplinas();
     ControllerCapturedImages controllerCapturedImages = new ControllerCapturedImages(diretorioPadraoCapfaceAulas);
+    ControllerRegistroAula controllerRegistroAula = ControllerRegistroAula.createControllerRegistroAula();
 
 
     @Override
@@ -79,6 +85,8 @@ public class ActivityNovaAula extends AppCompatActivity {
         spinnerCursos = (Spinner) findViewById(R.id.spinnerCursos);
         spinnerDisciplina = (Spinner) findViewById(R.id.spinnerDisciplina);
         spinnerTipoDisciplina = (Spinner) findViewById(R.id.spinnerTipoDisciplina);
+
+        editTextBimestre = (EditText) findViewById(R.id.editTextBimestre);
 
         editTextDataAula = (EditText) findViewById(R.id.editTextDataAula);
         editTextDataAula.setOnTouchListener(new View.OnTouchListener() {
@@ -114,6 +122,8 @@ public class ActivityNovaAula extends AppCompatActivity {
                 return false;
             }
         });
+
+        editTextConteudoAula = (EditText) findViewById(R.id.editTextConteudoAula);
 
         buttonCamera = (Button) findViewById(R.id.buttonCamera);
         buttonCamera.setOnClickListener(new View.OnClickListener() {
@@ -172,10 +182,12 @@ public class ActivityNovaAula extends AppCompatActivity {
 
     public boolean formularioAulaEstaValido() {
         if (spinnerDisciplina.getSelectedItem() != null &&
+            !editTextBimestre.getText().toString().equals("") &&
             !editTextDataAula.getText().toString().equals("") &&
             !editTextQtdeAulas.getText().toString().equals("") &&
             !editTextHoraInicioAula.getText().toString().equals("") &&
-            !editTextHoraFimAula.getText().toString().equals("")) {
+            !editTextHoraFimAula.getText().toString().equals("") &&
+            !editTextConteudoAula.getText().toString().equals("")) {
             return true;
         } else {
             return false;
@@ -191,7 +203,7 @@ public class ActivityNovaAula extends AppCompatActivity {
             startActivityForResult(irParaCamera, REQUEST_IMAGE_CAPTURE);    // inicializa a camera
 
         } else {
-            exibirToastNotification("Preencha os dados da aula!", Toast.LENGTH_LONG);
+            exibirToastNotification("Preencha todos os dados da aula!", Toast.LENGTH_LONG);
         }
     }
 
@@ -289,8 +301,43 @@ public class ActivityNovaAula extends AppCompatActivity {
     }
 
 
-    public void aoClicarNoBotaoEnviar() {
+    public RegistroAula getNewRegistroAulaFromFormulario() {
+        try {
+            RegistroAula novoRegistroAula = new RegistroAula();
+            novoRegistroAula.setCurso(spinnerCursos.getSelectedItem().toString());
+            novoRegistroAula.setDisciplina(((Disciplina) spinnerDisciplina.getSelectedItem()).getNome());
+            novoRegistroAula.setCodigoDisciplina(((Disciplina) spinnerDisciplina.getSelectedItem()).getCodigo());
+            novoRegistroAula.setProfessor(new ControllerProfessor().loadProfessor().getNome());
+            novoRegistroAula.setTurma(((Disciplina) spinnerDisciplina.getSelectedItem()).getTurma());
+            novoRegistroAula.setTipoDisciplina(spinnerTipoDisciplina.getSelectedItem().toString());
+            novoRegistroAula.setBimestre(editTextBimestre.getText().toString());
+            novoRegistroAula.setData(editTextDataAula.getText().toString());
+            novoRegistroAula.setQtdeAulas(editTextQtdeAulas.getText().toString());
+            novoRegistroAula.setHoraInicio(editTextHoraInicioAula.getText().toString());
+            novoRegistroAula.setHoraFim(editTextHoraFimAula.getText().toString());
+            novoRegistroAula.setConteudoAula(editTextConteudoAula.getText().toString());
+            novoRegistroAula.setDiretorioAula(getDirNameAulaAtualFromFormulario());
+            novoRegistroAula.setArrayListImagens(arrayListNomesImagensCapturadas);
+            return novoRegistroAula;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+
+    public void aoClicarNoBotaoEnviar() {
+        try {
+            RegistroAula novoRegistroAula = this.getNewRegistroAulaFromFormulario();
+            controllerRegistroAula.addRegistroAula(novoRegistroAula);
+            // abrir Dialog para exibir os passos sendo executados para o usuario
+            // zipar diretorio do RegistroAula
+            // enviar arquivo zipado para o servidor FTP
+            // setar RegistroAula como "enviado"
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
