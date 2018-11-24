@@ -3,6 +3,8 @@ package com.example.bernardo.capface.entidades;
 import android.os.Environment;
 import android.util.Log;
 
+import com.example.bernardo.capface.utils.CompactadorDeArquivo;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -71,8 +73,16 @@ public class ControllerRegistroAula {
         return this.arrayListRegistroAula;
     }
 
-    public void compactarRegistroAula(RegistroAula registroAula) {
+    public void compactarRegistroAula(RegistroAula registroAula) throws IOException {
+        String pathDiretorioOrigem = diretorioDaAplicacaoSalvarRegistroAula + "/" + registroAula.getDiretorioAula();
+        String nomeArquivoZip = registroAula.getDiretorioAula() + ".zip";
+        //String pathArquivoZip = diretorioDaAplicacaoSalvarRegistroAula + "/" + registroAula.getDiretorioAula() + "/" + nomeArquivoZip;
+        String pathArquivoZip = diretorioDaAplicacaoSalvarRegistroAula + "/" + nomeArquivoZip;
 
+        ArrayList<String> arrayListArquivosParaCompactar = (ArrayList<String>) registroAula.getArrayListImagens().clone();
+        arrayListArquivosParaCompactar.add(registroAula.getFileNameJSON());
+
+        CompactadorDeArquivo.compactarArquivos_zip(pathDiretorioOrigem, arrayListArquivosParaCompactar, pathArquivoZip);
     }
 
 }

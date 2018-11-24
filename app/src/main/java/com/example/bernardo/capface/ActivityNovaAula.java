@@ -329,9 +329,15 @@ public class ActivityNovaAula extends AppCompatActivity {
     public void aoClicarNoBotaoEnviar() {
         try {
             RegistroAula novoRegistroAula = this.getNewRegistroAulaFromFormulario();
+            Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula criado");
+
             controllerRegistroAula.addRegistroAula(novoRegistroAula);
-            // abrir Dialog para exibir os passos sendo executados para o usuario
+            Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula adicionado");
+
             // zipar diretorio do RegistroAula
+            controllerRegistroAula.compactarRegistroAula(novoRegistroAula);
+            Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula adicionado");
+
             // enviar arquivo zipado para o servidor FTP
             // setar RegistroAula como "enviado"
 

@@ -230,6 +230,14 @@ public class RegistroAula implements Serializable {
         file.close();
     }
 
+    public String getFileNameJSON() {
+        return fileNameJSON;
+    }
+
+    public void setFileNameJSON(String fileNameJSON) {
+        this.fileNameJSON = fileNameJSON;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
