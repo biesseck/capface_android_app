@@ -85,4 +85,8 @@ public class ControllerRegistroAula {
         CompactadorDeArquivo.compactarArquivos_zip(pathDiretorioOrigem, arrayListArquivosParaCompactar, pathArquivoZip);
     }
 
+    public String getDiretorioDaAplicacaoSalvarRegistroAula() {
+        return diretorioDaAplicacaoSalvarRegistroAula;
+    }
+
 }

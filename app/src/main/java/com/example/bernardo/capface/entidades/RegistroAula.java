@@ -216,7 +216,7 @@ public class RegistroAula implements Serializable {
             }
             obj.put("imgFiles", jsonArrayImgFiles);
 
-            this.conteudoJSON = obj.toString(3);
+            this.conteudoJSON = obj.toString(3).replace("\\/", "/");
 
         } catch (JSONException e) {
             e.printStackTrace();

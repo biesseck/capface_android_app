@@ -5,10 +5,10 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,10 +27,10 @@ import com.example.bernardo.capface.entidades.ControllerProfessor;
 import com.example.bernardo.capface.entidades.ControllerRegistroAula;
 import com.example.bernardo.capface.entidades.Disciplina;
 import com.example.bernardo.capface.entidades.RegistroAula;
+import com.example.bernardo.capface.network.ClienteFTP;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,10 +63,12 @@ public class ActivityNovaAula extends AppCompatActivity {
     private long dataHoraInicial;
     ArrayList<String> arrayListNomesImagensCapturadas = new ArrayList<>();
 
-
     ControllerDisciplinas controllerDisciplinas = ControllerDisciplinas.createControllerDisciplinas();
     ControllerCapturedImages controllerCapturedImages = new ControllerCapturedImages(diretorioPadraoCapfaceAulas);
     ControllerRegistroAula controllerRegistroAula = ControllerRegistroAula.createControllerRegistroAula();
+    ControllerProfessor controllerProfessor = new ControllerProfessor();
+
+    ClienteFTP clienteFTP;
 
 
     @Override
@@ -155,6 +157,9 @@ public class ActivityNovaAula extends AppCompatActivity {
                 return false;
             }
         });
+
+        editTextJSONfile = (EditText) findViewById(R.id.editTextJSONfile);
+        editTextIPServidor = (EditText) findViewById(R.id.editTextIPServidor);
     }
 
 
@@ -339,6 +344,16 @@ public class ActivityNovaAula extends AppCompatActivity {
             Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula adicionado");
 
             // enviar arquivo zipado para o servidor FTP
+            //String ipServidor = "172.16.230.16";
+            String ipServidor = editTextIPServidor.getText().toString();
+            String user = controllerProfessor.loadProfessor().getUserFTP();
+            String password = controllerProfessor.loadProfessor().getSenhaFTP();
+            String pathDiretorioArquivoParaEnviar = controllerRegistroAula.getDiretorioDaAplicacaoSalvarRegistroAula();
+            String nomeArquivoParaEnviar = novoRegistroAula.getDiretorioAula() + ".zip";
+            clienteFTP = new ClienteFTP();
+            //clienteFTP.conectarAoServidorEnviarArquivo(ipServidor, user, password, pathArquivoParaEnviar);
+            clienteFTP.conectarAoServidorEnviarArquivo(ipServidor, user, password, pathDiretorioArquivoParaEnviar, nomeArquivoParaEnviar);
+
             // setar RegistroAula como "enviado"
 
         } catch (IOException e) {
