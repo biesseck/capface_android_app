@@ -10,8 +10,16 @@ import org.apache.commons.net.ftp.FTPReply;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Observable;
 
-public class ClienteFTP {
+public class ClienteFTP extends Observable {
+
+    public static int DESCONECTADO_DO_SERVIDOR = 0;
+    public static int CONECTADO_AO_SERVIDOR = 1;
+    public static int ENVIANDO_ARQUIVO = 2;
+    public static int UPLOAD_REALIZADO = 3;
+    public static int UPLOAD_NAO_REALIZADO = 4;
+    public static int SERVIDOR_OFFLINE_OU_IP_ERRADO = 5;
 
     FTPClient mFtp = new FTPClient();
     ClienteFTP clienteFTP = this;
@@ -66,12 +74,6 @@ public class ClienteFTP {
                 return true;
             }
 
-        /*
-        } catch (Exception e) {
-
-            Log.e(TAG, "Erro: nÃ£o foi possivel se conectar");
-        }
-        */
         return false;
     }
 
@@ -94,26 +96,32 @@ public class ClienteFTP {
                         Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - conectando...");
                         try {
                             Conectado = clienteFTP.Conectar(user, password, ipServidor);
-                            if (Conectado) {
-                                Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - conectado ao servidor");
+                            Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - conectado ao servidor");
 
-                                //arquivoEnviado = clienteFTP.Upload(pathArquivoParaEnviar);
-                                arquivoEnviado = clienteFTP.Upload(pathDiretorioArquivoParaEnviar, nomeArquivoParaEnviar);
-                                if (arquivoEnviado) {
-                                    Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - arquivo enviado: '" + nomeArquivoParaEnviar + "'");
-                                } else {
-                                    Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - nao foi possivel enviar o arquivo '" + nomeArquivoParaEnviar);
-                                }
+                            setChanged();
+                            notifyObservers(ENVIANDO_ARQUIVO);
+                            Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - enviando arquivo...");
+                            arquivoEnviado = clienteFTP.Upload(pathDiretorioArquivoParaEnviar, nomeArquivoParaEnviar);
 
-                                clienteFTP.Desconectar();
-                                Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - desconectado do servidor");
-
+                            if (arquivoEnviado) {
+                                Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - arquivo enviado: '" + nomeArquivoParaEnviar + "'");
+                                setChanged();
+                                notifyObservers(UPLOAD_REALIZADO);
                             } else {
-                                Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - nao foi possivel conectar");
+                                Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - nao foi possivel enviar o arquivo '" + nomeArquivoParaEnviar);
+                                setChanged();
+                                notifyObservers(UPLOAD_NAO_REALIZADO);
                             }
 
+                            clienteFTP.Desconectar();
+                            Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - desconectado do servidor");
+
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            setChanged();
+                            notifyObservers(SERVIDOR_OFFLINE_OU_IP_ERRADO);
+
+                            //Log.i("ClienteFTP", "conectarAoServidorEnviarArquivo() - " + e.getMessage());
+                            //e.printStackTrace();
                         }
 
                     }

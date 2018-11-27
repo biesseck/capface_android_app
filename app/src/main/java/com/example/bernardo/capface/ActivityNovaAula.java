@@ -1,6 +1,7 @@
 package com.example.bernardo.capface;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -31,13 +33,16 @@ import com.example.bernardo.capface.network.ClienteFTP;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.NoRouteToHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Observable;
+import java.util.Observer;
 
-public class ActivityNovaAula extends AppCompatActivity {
+public class ActivityNovaAula extends AppCompatActivity implements Observer {
 
     int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -55,7 +60,6 @@ public class ActivityNovaAula extends AppCompatActivity {
     EditText editTextDiretorioCapface;
     EditText editTextDiretorioAulaAtual;
     ListView listViewImageFilesAulaAtual;
-    EditText editTextJSONfile;
     EditText editTextIPServidor;
 
     String diretorioPadraoCapfaceAulas = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString()+ "/CapFace/Aulas";
@@ -70,6 +74,9 @@ public class ActivityNovaAula extends AppCompatActivity {
 
     ClienteFTP clienteFTP;
 
+    ProgressDialog dialog;
+    Toast toast;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +87,7 @@ public class ActivityNovaAula extends AppCompatActivity {
         this.carregarDadosDisciplinas();
         this.atualizarListViewImageFilesAulaAtual(arrayListNomesImagensCapturadas);
         this.criarDiretorio(diretorioPadraoCapfaceAulas);
+        dialog = new ProgressDialog(this);
     }
 
 
@@ -158,7 +166,6 @@ public class ActivityNovaAula extends AppCompatActivity {
             }
         });
 
-        editTextJSONfile = (EditText) findViewById(R.id.editTextJSONfile);
         editTextIPServidor = (EditText) findViewById(R.id.editTextIPServidor);
     }
 
@@ -293,10 +300,33 @@ public class ActivityNovaAula extends AppCompatActivity {
     }
 
 
-    public void exibirToastNotification(String text, int duration){
-        Context context = getApplicationContext();
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+    public void exibirToastNotification(final String text, final int duration){
+        new Thread(){
+            public void run() {
+                ActivityNovaAula.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        Context context = getApplicationContext();
+                        toast = Toast.makeText(context, text, duration);
+                        toast.setDuration(duration);
+                        toast.show();
+                    }
+                });
+            }
+        }.start();
+    }
+
+
+    public void exibirProgressDialog(final String text){
+        new Thread(){
+            public void run() {
+                ActivityNovaAula.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        dialog.setMessage(text);
+                        dialog.show();
+                    }
+                });
+            }
+        }.start();
     }
 
 
@@ -333,25 +363,28 @@ public class ActivityNovaAula extends AppCompatActivity {
 
     public void aoClicarNoBotaoEnviar() {
         try {
+            closeKeyboard();
+
             RegistroAula novoRegistroAula = this.getNewRegistroAulaFromFormulario();
-            Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula criado");
+            //Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula criado");
 
             controllerRegistroAula.addRegistroAula(novoRegistroAula);
-            Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula adicionado");
+            //Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula adicionado");
 
             // zipar diretorio do RegistroAula
+            exibirToastNotification("Compactando imagens...", Toast.LENGTH_SHORT);
             controllerRegistroAula.compactarRegistroAula(novoRegistroAula);
-            Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula adicionado");
+            //Log.i("aoClicarNoBotaoEnviar()", "novoRegistroAula adicionado");
 
-            // enviar arquivo zipado para o servidor FTP
             //String ipServidor = "172.16.230.16";
             String ipServidor = editTextIPServidor.getText().toString();
             String user = controllerProfessor.loadProfessor().getUserFTP();
             String password = controllerProfessor.loadProfessor().getSenhaFTP();
             String pathDiretorioArquivoParaEnviar = controllerRegistroAula.getDiretorioDaAplicacaoSalvarRegistroAula();
             String nomeArquivoParaEnviar = novoRegistroAula.getDiretorioAula() + ".zip";
+
             clienteFTP = new ClienteFTP();
-            //clienteFTP.conectarAoServidorEnviarArquivo(ipServidor, user, password, pathArquivoParaEnviar);
+            clienteFTP.addObserver(this);
             clienteFTP.conectarAoServidorEnviarArquivo(ipServidor, user, password, pathDiretorioArquivoParaEnviar, nomeArquivoParaEnviar);
 
             // setar RegistroAula como "enviado"
@@ -359,6 +392,39 @@ public class ActivityNovaAula extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Log.i("ActivityNovaAula", "conectarAoServidorEnviarArquivo() - update()");
+        if (o instanceof ClienteFTP) {  // se recebeu uma notificacao do ClienteFTP
+            if (arg instanceof Integer) {
+                if ((int) arg == ClienteFTP.SERVIDOR_OFFLINE_OU_IP_ERRADO) {
+                    exibirToastNotification("Servidor offline, verifique o Endereço IP", Toast.LENGTH_LONG);
+
+                } else if ((int) arg == ClienteFTP.ENVIANDO_ARQUIVO) {
+                    //Log.i("ActivityNovaAula", "conectarAoServidorEnviarArquivo() - update() - enviando arquivo...");
+                    exibirProgressDialog("Enviando imagens...");
+
+                } else if ((int) arg == ClienteFTP.UPLOAD_REALIZADO) {
+                    exibirToastNotification("Registro de Aula enviado com sucesso!", Toast.LENGTH_LONG);
+                    this.finish();
+
+                } else if ((int) arg == ClienteFTP.UPLOAD_NAO_REALIZADO) {
+                    exibirToastNotification("Erro ao enviar Registro de Aula!", Toast.LENGTH_LONG);
+                }
+
+            }
+        }
+    }
+
+
+
+    private void closeKeyboard() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editTextConteudoAula.getWindowToken(), 0);
     }
 
 
