@@ -74,6 +74,7 @@ public class ActivityNovaAula extends AppCompatActivity implements Observer {
 
     ClienteFTP clienteFTP;
 
+    ActivityNovaAula activityNovaAula = this;
     ProgressDialog dialog;
     Toast toast;
 
@@ -87,7 +88,6 @@ public class ActivityNovaAula extends AppCompatActivity implements Observer {
         this.carregarDadosDisciplinas();
         this.atualizarListViewImageFilesAulaAtual(arrayListNomesImagensCapturadas);
         this.criarDiretorio(diretorioPadraoCapfaceAulas);
-        dialog = new ProgressDialog(this);
     }
 
 
@@ -321,8 +321,24 @@ public class ActivityNovaAula extends AppCompatActivity implements Observer {
             public void run() {
                 ActivityNovaAula.this.runOnUiThread(new Runnable() {
                     public void run() {
+                        dialog = new ProgressDialog(activityNovaAula);
                         dialog.setMessage(text);
                         dialog.show();
+                    }
+                });
+            }
+        }.start();
+    }
+
+
+    public void fecharProgressDialog(){
+        new Thread(){
+            public void run() {
+                ActivityNovaAula.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
                     }
                 });
             }
@@ -409,6 +425,7 @@ public class ActivityNovaAula extends AppCompatActivity implements Observer {
                     exibirProgressDialog("Enviando imagens...");
 
                 } else if ((int) arg == ClienteFTP.UPLOAD_REALIZADO) {
+                    fecharProgressDialog();
                     exibirToastNotification("Registro de Aula enviado com sucesso!", Toast.LENGTH_LONG);
                     this.finish();
 

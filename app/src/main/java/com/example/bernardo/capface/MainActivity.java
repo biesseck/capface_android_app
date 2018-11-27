@@ -10,15 +10,27 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import com.example.bernardo.capface.entidades.ControllerRegistroAula;
+import com.example.bernardo.capface.entidades.RegistroAula;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton floatingActionButtonAddAula;
     AlertDialog.Builder alertDialogBuilder;
+
+    ListView listViewRegistrosDeAula;
+
+    ControllerRegistroAula controllerRegistroAula = ControllerRegistroAula.createControllerRegistroAula();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +73,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-
+        atualizarListViewRegistrosDeAula();
     }
 
     public void inicializarComponentes() {
+        listViewRegistrosDeAula = (ListView) findViewById(R.id.listViewRegistrosDeAula);
+        listViewRegistrosDeAula.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
         floatingActionButtonAddAula = (FloatingActionButton) findViewById(R.id.floatingActionButtonAddAula);
         floatingActionButtonAddAula.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,5 +135,25 @@ public class MainActivity extends AppCompatActivity {
         //intent.putExtra("arrayListNomeImagensCapturadas", arrayListNomesImagensCapturadas);
         //startActivityForResult(intent,ID_ACTIVITY_CONFIG);
         startActivity(intent);
+    }
+
+
+    public void atualizarListViewRegistrosDeAula() {
+        try {
+            listViewRegistrosDeAula.setAdapter(null);
+
+            ArrayList<RegistroAula> arrayListRegistroAula = controllerRegistroAula.loadTodosRegistrosAula();
+            ArrayList<String> arrayListRegistroAulaString = new ArrayList<>();
+            for (int i=0; i<arrayListRegistroAula.size(); i++) {
+                arrayListRegistroAulaString.add(arrayListRegistroAula.get(i).toStringForListView());
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayListRegistroAulaString);
+            listViewRegistrosDeAula.setAdapter(adapter);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

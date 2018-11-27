@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 public class RegistroAula implements Serializable {
 
+    private static final long serialVersionUID = 9125271018717732648L;
+
     private String curso;
     private String disciplina;
     private String codigoDisciplina;
@@ -236,6 +238,31 @@ public class RegistroAula implements Serializable {
 
     public void setFileNameJSON(String fileNameJSON) {
         this.fileNameJSON = fileNameJSON;
+    }
+
+    public String toString() {
+        String registroAulaString = curso;
+        registroAulaString += ", " + disciplina;
+        registroAulaString += ", " + codigoDisciplina;
+        registroAulaString += ", " + professor;
+        registroAulaString += ", " + turma;
+        registroAulaString += ", " + tipoDisciplina;
+        registroAulaString += ", " + bimestre;
+        registroAulaString += ", " + data;
+        registroAulaString += ", " + qtdeAulas;
+        registroAulaString += ", " + horaInicio;
+        registroAulaString += ", " + horaFim;
+        registroAulaString += ", " + conteudoAula;
+
+        return registroAulaString;
+    }
+
+    public String toStringForListView() {
+        String registroAulaString = "Disc: " + disciplina + "  -  " + codigoDisciplina;
+        registroAulaString += "\r\n" + "Bimestre: " + bimestre + "   Data: " + data;
+        registroAulaString += "\r\n" + qtdeAulas + " aulas   Inicio: " + horaInicio + "   Fim: " + horaFim;
+
+        return registroAulaString;
     }
 
     @Override
