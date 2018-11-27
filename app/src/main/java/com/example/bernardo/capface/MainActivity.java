@@ -108,13 +108,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void showAlertDialog_aboutCapface() {
         alertDialogBuilder.setTitle("Sobre o CapFace");
-        String aboutCapface = "COORDENADOR\nBernardo Biesseck\n\n";
+        String aboutCapface = "COORDENADOR\n -Bernardo J. G. Biesseck\n\n";
         aboutCapface += "BOLSISTAS\n";
-        aboutCapface += "Leuri\n";
-        aboutCapface += "Esdras\n";
-        aboutCapface += "Hellen\n";
-        aboutCapface += "Matheus Q.\n";
-        aboutCapface += "Onofre\n";
+        aboutCapface += " -Leuri Rabelo Zanetti\n";
+        aboutCapface += " -Esdras Júnior de Souza Moura\n";
+        aboutCapface += " -Hellen Tamara Santana Silva\n";
+        aboutCapface += " -Mateus Quintino Oliveira Santos\n";
+        aboutCapface += " -Onofre Fonseca de Moraes\n";
         alertDialogBuilder.setMessage(aboutCapface);
         alertDialogBuilder.setPositiveButton("OK", null);
         AlertDialog dialog = alertDialogBuilder.create(); // create and show the alert dialog
