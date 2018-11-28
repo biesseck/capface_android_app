@@ -29,7 +29,8 @@ import com.example.bernardo.capface.entidades.ControllerProfessor;
 import com.example.bernardo.capface.entidades.ControllerRegistroAula;
 import com.example.bernardo.capface.entidades.Disciplina;
 import com.example.bernardo.capface.entidades.RegistroAula;
-import com.example.bernardo.capface.network.ClienteFTP;
+//import com.example.bernardo.capface.network.ClienteFTP;
+import com.example.bernardo.capface.network.ClienteSocket;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +73,8 @@ public class ActivityNovaAula extends AppCompatActivity implements Observer {
     ControllerRegistroAula controllerRegistroAula = ControllerRegistroAula.createControllerRegistroAula();
     ControllerProfessor controllerProfessor = new ControllerProfessor();
 
-    ClienteFTP clienteFTP;
+    // ClienteFTP clienteFTP;
+    ClienteSocket clienteSocket;
 
     ActivityNovaAula activityNovaAula = this;
     ProgressDialog dialog;
@@ -323,6 +325,7 @@ public class ActivityNovaAula extends AppCompatActivity implements Observer {
                     public void run() {
                         dialog = new ProgressDialog(activityNovaAula);
                         dialog.setMessage(text);
+                        dialog.setCancelable(true);
                         dialog.show();
                     }
                 });
@@ -336,8 +339,10 @@ public class ActivityNovaAula extends AppCompatActivity implements Observer {
             public void run() {
                 ActivityNovaAula.this.runOnUiThread(new Runnable() {
                     public void run() {
+                        Log.i("ActivityNovaAula", "conectarAoServidorEnviarArquivo() - fechando ProgressDialog...");
                         if (dialog.isShowing()) {
                             dialog.dismiss();
+                            Log.i("ActivityNovaAula", "conectarAoServidorEnviarArquivo() - ProgressDialog fechada");
                         }
                     }
                 });
@@ -399,9 +404,9 @@ public class ActivityNovaAula extends AppCompatActivity implements Observer {
             String pathDiretorioArquivoParaEnviar = controllerRegistroAula.getDiretorioDaAplicacaoSalvarRegistroAula();
             String nomeArquivoParaEnviar = novoRegistroAula.getDiretorioAula() + ".zip";
 
-            clienteFTP = new ClienteFTP();
-            clienteFTP.addObserver(this);
-            clienteFTP.conectarAoServidorEnviarArquivo(ipServidor, user, password, pathDiretorioArquivoParaEnviar, nomeArquivoParaEnviar);
+            clienteSocket = new ClienteSocket();
+            clienteSocket.addObserver(this);
+            clienteSocket.conectarAoServidorEnviarArquivo(ipServidor, 3322, pathDiretorioArquivoParaEnviar, nomeArquivoParaEnviar);
 
             // setar RegistroAula como "enviado"
 
@@ -415,21 +420,21 @@ public class ActivityNovaAula extends AppCompatActivity implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         Log.i("ActivityNovaAula", "conectarAoServidorEnviarArquivo() - update()");
-        if (o instanceof ClienteFTP) {  // se recebeu uma notificacao do ClienteFTP
+        if (o instanceof ClienteSocket) {  // se recebeu uma notificacao do ClienteFTP
             if (arg instanceof Integer) {
-                if ((int) arg == ClienteFTP.SERVIDOR_OFFLINE_OU_IP_ERRADO) {
+                if ((int) arg == ClienteSocket.SERVIDOR_OFFLINE_OU_IP_ERRADO) {
                     exibirToastNotification("Servidor offline, verifique o Endereço IP", Toast.LENGTH_LONG);
 
-                } else if ((int) arg == ClienteFTP.ENVIANDO_ARQUIVO) {
+                } else if ((int) arg == ClienteSocket.ENVIANDO_ARQUIVO) {
                     //Log.i("ActivityNovaAula", "conectarAoServidorEnviarArquivo() - update() - enviando arquivo...");
                     exibirProgressDialog("Enviando imagens...");
 
-                } else if ((int) arg == ClienteFTP.UPLOAD_REALIZADO) {
+                } else if ((int) arg == ClienteSocket.UPLOAD_REALIZADO) {
                     fecharProgressDialog();
                     exibirToastNotification("Registro de Aula enviado com sucesso!", Toast.LENGTH_LONG);
                     this.finish();
 
-                } else if ((int) arg == ClienteFTP.UPLOAD_NAO_REALIZADO) {
+                } else if ((int) arg == ClienteSocket.UPLOAD_NAO_REALIZADO) {
                     exibirToastNotification("Erro ao enviar Registro de Aula!", Toast.LENGTH_LONG);
                 }
 
