@@ -1,5 +1,6 @@
 package com.example.bernardo.capface;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.bernardo.capface.entidades.ControllerDisciplinas;
 import com.example.bernardo.capface.entidades.ControllerProfessor;
@@ -37,6 +39,8 @@ public class ActivityConfiguracoes extends AppCompatActivity {
 
     ControllerProfessor controllerProfessor = new ControllerProfessor();
     ControllerDisciplinas controllerDisciplinas = ControllerDisciplinas.createControllerDisciplinas();
+
+    Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,13 +108,45 @@ public class ActivityConfiguracoes extends AppCompatActivity {
     }
 
 
+    public boolean validarFormularioProfessor() {
+        if (!editTextNomeProfessor.getText().toString().equals("") &&
+            !editTextUserFTP.getText().toString().equals("") &&
+            !editTextSenhaFTP.getText().toString().equals("") &&
+            !editTextUserQAcademico.getText().toString().equals("") &&
+            !editTextSenhaQAcademico.getText().toString().equals("")) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public void exibirToastNotification(final String text, final int duration){
+        new Thread(){
+            public void run() {
+                ActivityConfiguracoes.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        Context context = getApplicationContext();
+                        toast = Toast.makeText(context, text, duration);
+                        toast.setDuration(duration);
+                        toast.show();
+                    }
+                });
+            }
+        }.start();
+    }
+
+
     public void aoClicarSalvarEditarProfessor() {
         if (buttonSalvarEditarProfessor.getText().toString().equals("SALVAR")) {
             try {
-                Professor professor = this.getProfessorFromFormulario();
-                controllerProfessor.saveProfessor(professor);
-                this.disableFormularioProfessor();
-                buttonSalvarEditarProfessor.setText("EDITAR");
+                if (validarFormularioProfessor() == true) {
+                    Professor professor = this.getProfessorFromFormulario();
+                    controllerProfessor.saveProfessor(professor);
+                    this.disableFormularioProfessor();
+                    buttonSalvarEditarProfessor.setText("EDITAR");
+                } else {
+                    exibirToastNotification("Preencha todos os dados do professor", Toast.LENGTH_LONG);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -65,11 +65,14 @@ public class ControllerRegistroAula {
     }
 
     public ArrayList<RegistroAula> loadTodosRegistrosAula() throws IOException, ClassNotFoundException {
-        FileInputStream fi = new FileInputStream(new File(caminhoCompletoDoArquivoRegistroAula));
-        ObjectInputStream oi = new ObjectInputStream(fi);
-        this.arrayListRegistroAula = (ArrayList<RegistroAula>) oi.readObject();
-        oi.close();
-        fi.close();
+        File file = new File(caminhoCompletoDoArquivoRegistroAula);
+        if (file.exists()) {
+            FileInputStream fi = new FileInputStream(file);
+            ObjectInputStream oi = new ObjectInputStream(fi);
+            this.arrayListRegistroAula = (ArrayList<RegistroAula>) oi.readObject();
+            oi.close();
+            fi.close();
+        }
         return this.arrayListRegistroAula;
     }
 
