@@ -37,6 +37,15 @@ public class Disciplina {
         return disciplinaString;
     }
 
+    public String toStringToShowInAlertDialog() {
+        String disciplinaString = "  NOME: " + nome
+                                  + "\r\n\r\n  CÓDIGO: " + codigo
+                                  + "\r\n\r\n  CURSO: " + curso
+                                  + "\r\n\r\n  TURMA: " + turma
+                                  + "\r\n\r\n  TURNO: " + turno;
+        return disciplinaString;
+    }
+
     public String getNome() {
         return nome;
     }

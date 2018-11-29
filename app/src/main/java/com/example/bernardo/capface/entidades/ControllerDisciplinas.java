@@ -51,6 +51,14 @@ public class ControllerDisciplinas {
         Log.e("ControllerDisciplinas", "addDisciplina(): arrayListDisciplinas.size(): " + arrayListDisciplinas.size());
     }
 
+    public void atualizarArquivoDeDisciplinas() throws IOException {
+        FileOutputStream ArquivoGravar = new FileOutputStream(new File(caminhoCompletoDoArquivoDisciplinas));
+        for (int i=0; i<arrayListDisciplinas.size(); i++) {
+            ArquivoGravar.write((arrayListDisciplinas.get(i).toStringToSave() + "\r\n").getBytes());
+        }
+        ArquivoGravar.close();
+    }
+
     public ArrayList<Disciplina> loadDisciplinas() throws IOException {
         File fileDadosDisciplinas = new File(caminhoCompletoDoArquivoDisciplinas);
         if (fileDadosDisciplinas.exists()) {
@@ -77,6 +85,14 @@ public class ControllerDisciplinas {
         Log.e("ControllerDisciplinas", "loadDisciplinas(): dados das disciplinas carregados com sucesso!");
         Log.e("ControllerDisciplinas", "loadDisciplinas(): arrayListDisciplinas.size(): " + arrayListDisciplinas.size());
         return arrayListDisciplinas;
+    }
+
+    public Disciplina getDisciplina(int index) throws IndexOutOfBoundsException {
+        if (index >= 0  &&  index < arrayListDisciplinas.size()) {
+            return arrayListDisciplinas.get(index);
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
     }
 
 }

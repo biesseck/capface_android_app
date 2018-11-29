@@ -1,10 +1,14 @@
 package com.example.bernardo.capface;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +43,7 @@ public class ActivityConfiguracoes extends AppCompatActivity {
 
     ControllerProfessor controllerProfessor = new ControllerProfessor();
     ControllerDisciplinas controllerDisciplinas = ControllerDisciplinas.createControllerDisciplinas();
+    Disciplina disciplinaSendoEditada;
 
     Toast toast;
 
@@ -84,6 +89,19 @@ public class ActivityConfiguracoes extends AppCompatActivity {
                 return false;
             }
         });
+        listViewDisciplinasCadastradas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                aoClicarLongoEmUmaDisciplinaCadastrada(parent, view, position, id);
+                return true;
+            }
+        });
+        listViewDisciplinasCadastradas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                aoClicarEmUmaDisciplinaCadastrada(parent, view, position, id);
+            }
+        });
 
         buttonCadastrarDisciplina = (Button) findViewById(R.id.buttonCadastrarDisciplina);
         buttonCadastrarDisciplina.setOnClickListener(new View.OnClickListener() {
@@ -96,14 +114,64 @@ public class ActivityConfiguracoes extends AppCompatActivity {
     }
 
 
+    public void aoClicarEmUmaDisciplinaCadastrada(AdapterView<?> parent, View view, int position, long id) {
+        Disciplina disciplina = controllerDisciplinas.getDisciplina(position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Disciplina");
+        builder.setMessage(disciplina.toStringToShowInAlertDialog());
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+
+            }
+        });
+        AlertDialog alerta = builder.create();
+        alerta.show();
+    }
+
+
+    public void aoClicarLongoEmUmaDisciplinaCadastrada(AdapterView<?> parent, View view, int position, long id) {
+        this.disciplinaSendoEditada = controllerDisciplinas.getDisciplina(position);
+        popularFormularioDisciplina(disciplinaSendoEditada);
+        buttonCadastrarDisciplina.setText("SALVAR");
+        listViewDisciplinasCadastradas.setEnabled(false);
+    }
+
+
     public void aoClicarCadastrarDisciplina() {
-        try {
-            Disciplina disciplina = this.getDisciplinaFromFormulario();
-            controllerDisciplinas.addDisciplina(disciplina);
-            this.carregarDadosDisciplinas();
-            this.clearFormularioDisciplina();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (buttonCadastrarDisciplina.getText().toString().equals("CADASTRAR")) {
+            if (validarFormularioDisciplina() == true) {
+                try {
+                    Disciplina disciplina = this.getDisciplinaFromFormulario();
+                    controllerDisciplinas.addDisciplina(disciplina);
+                    this.carregarDadosDisciplinas();
+                    this.clearFormularioDisciplina();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                exibirToastNotification("Preencha todos os dados da disciplina", Toast.LENGTH_LONG);
+            }
+
+        } else if (buttonCadastrarDisciplina.getText().toString().equals("SALVAR")) {
+            if (validarFormularioDisciplina() == true) {
+                try {
+                    disciplinaSendoEditada.setNome(editTextNomeDisciplina.getText().toString());
+                    disciplinaSendoEditada.setCodigo(editTextCodigoDisciplina.getText().toString());
+                    disciplinaSendoEditada.setCurso(editTextCurso.getText().toString());
+                    disciplinaSendoEditada.setTurma(editTextTurma.getText().toString());
+                    disciplinaSendoEditada.setTurno(editTextTurno.getText().toString());
+                    controllerDisciplinas.atualizarArquivoDeDisciplinas();
+                    this.carregarDadosDisciplinas();
+                    this.clearFormularioDisciplina();
+                    listViewDisciplinasCadastradas.setEnabled(true);
+                    buttonCadastrarDisciplina.setText("CADASTRAR");
+                    exibirToastNotification("Disciplina atualizada com sucesso", Toast.LENGTH_LONG);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                exibirToastNotification("Não é possível atualizar disciplina com dados vazios", Toast.LENGTH_LONG);
+            }
         }
     }
 
@@ -114,6 +182,18 @@ public class ActivityConfiguracoes extends AppCompatActivity {
             !editTextSenhaFTP.getText().toString().equals("") &&
             !editTextUserQAcademico.getText().toString().equals("") &&
             !editTextSenhaQAcademico.getText().toString().equals("")) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean validarFormularioDisciplina() {
+        if (!editTextNomeDisciplina.getText().toString().equals("") &&
+            !editTextCodigoDisciplina.getText().toString().equals("") &&
+            !editTextCurso.getText().toString().equals("") &&
+            !editTextTurma.getText().toString().equals("") &&
+            !editTextTurno.getText().toString().equals("")) {
             return true;
         }
         return false;
@@ -246,6 +326,15 @@ public class ActivityConfiguracoes extends AppCompatActivity {
         editTextSenhaFTP.setText(professor.getSenhaFTP());
         editTextUserQAcademico.setText(professor.getUserQAcademico());
         editTextSenhaQAcademico.setText(professor.getSenhaQAcademico());
+    }
+
+
+    public void popularFormularioDisciplina(Disciplina disciplina) {
+        editTextNomeDisciplina.setText(disciplina.getNome());
+        editTextCodigoDisciplina.setText(disciplina.getCodigo());
+        editTextCurso.setText(disciplina.getCurso());
+        editTextTurma.setText(disciplina.getTurma());
+        editTextTurno.setText(disciplina.getTurno());
     }
 
 
