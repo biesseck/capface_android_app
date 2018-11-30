@@ -51,6 +51,18 @@ public class ControllerDisciplinas {
         Log.e("ControllerDisciplinas", "addDisciplina(): arrayListDisciplinas.size(): " + arrayListDisciplinas.size());
     }
 
+    public void excluirDisciplina(int index) throws IOException {
+        if (index >= 0  &&  index < arrayListDisciplinas.size()) {
+            arrayListDisciplinas.remove(index);
+            FileOutputStream ArquivoGravar = new FileOutputStream(new File(caminhoCompletoDoArquivoDisciplinas));
+            for (int i=0; i<arrayListDisciplinas.size(); i++) {
+                ArquivoGravar.write((arrayListDisciplinas.get(i).toStringToSave() + "\r\n").getBytes());
+            }
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
     public void atualizarArquivoDeDisciplinas() throws IOException {
         FileOutputStream ArquivoGravar = new FileOutputStream(new File(caminhoCompletoDoArquivoDisciplinas));
         for (int i=0; i<arrayListDisciplinas.size(); i++) {

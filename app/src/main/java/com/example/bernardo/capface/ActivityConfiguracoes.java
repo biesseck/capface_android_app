@@ -129,11 +129,42 @@ public class ActivityConfiguracoes extends AppCompatActivity {
     }
 
 
+    /*
     public void aoClicarLongoEmUmaDisciplinaCadastrada(AdapterView<?> parent, View view, int position, long id) {
         this.disciplinaSendoEditada = controllerDisciplinas.getDisciplina(position);
         popularFormularioDisciplina(disciplinaSendoEditada);
         buttonCadastrarDisciplina.setText("SALVAR");
         listViewDisciplinasCadastradas.setEnabled(false);
+    }
+    */
+
+
+    public void aoClicarLongoEmUmaDisciplinaCadastrada(AdapterView<?> parent, View view, final int position, long id) {
+        disciplinaSendoEditada = controllerDisciplinas.getDisciplina(position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Disciplina");
+        builder.setMessage(disciplinaSendoEditada.toStringToShowInAlertDialog());
+        builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                disciplinaSendoEditada = controllerDisciplinas.getDisciplina(position);
+                popularFormularioDisciplina(disciplinaSendoEditada);
+                buttonCadastrarDisciplina.setText("SALVAR");
+                listViewDisciplinasCadastradas.setEnabled(false);
+            }
+        });
+        builder.setNegativeButton("Excluir", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                try {
+                    controllerDisciplinas.excluirDisciplina(position);
+                    carregarDadosDisciplinas();
+                    exibirToastNotification("Disciplina excluída com sucesso", Toast.LENGTH_LONG);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        AlertDialog alerta = builder.create();
+        alerta.show();
     }
 
 
