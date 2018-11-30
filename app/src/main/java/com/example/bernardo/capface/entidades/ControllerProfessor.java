@@ -39,21 +39,23 @@ public class ControllerProfessor {
             dadosProfessor = br.readLine();
             br.close();
 
-            String[] dadosSeparados = dadosProfessor.split(",");
-            String nomeProfessor = dadosSeparados[0];
-            String usuarioFTP = dadosSeparados[1];
-            String senhaFTP = dadosSeparados[2];
-            String usuarioQAcademico = dadosSeparados[3];
-            String senhaQAcademico = dadosSeparados[4];
+            if (!dadosProfessor.equals("")) {
+                String[] dadosSeparados = dadosProfessor.split(",");
+                String nomeProfessor = dadosSeparados[0];
+                String usuarioFTP = dadosSeparados[1];
+                String senhaFTP = dadosSeparados[2];
+                String usuarioQAcademico = dadosSeparados[3];
+                String senhaQAcademico = dadosSeparados[4];
 
-            Professor professor = new Professor();
-            professor.setNome(nomeProfessor);
-            professor.setUserFTP(usuarioFTP);
-            professor.setSenhaFTP(senhaFTP);
-            professor.setUserQAcademico(usuarioQAcademico);
-            professor.setSenhaQAcademico(senhaQAcademico);
-            this.professor = professor;
-            Log.e("ControllerProfessor", "loadProfessor(): dados do professor carregados com sucesso!");
+                Professor professor = new Professor();
+                professor.setNome(nomeProfessor);
+                professor.setUserFTP(usuarioFTP);
+                professor.setSenhaFTP(senhaFTP);
+                professor.setUserQAcademico(usuarioQAcademico);
+                professor.setSenhaQAcademico(senhaQAcademico);
+                this.professor = professor;
+                Log.e("ControllerProfessor", "loadProfessor(): dados do professor carregados com sucesso!");
+            }
         }
 
         return professor;

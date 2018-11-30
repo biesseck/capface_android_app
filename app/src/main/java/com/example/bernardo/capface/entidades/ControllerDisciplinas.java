@@ -69,15 +69,17 @@ public class ControllerDisciplinas {
             Disciplina disciplina;
 
             while ((dadosDisciplina = leitorDeArquivo.readLine()) != null) {
-                dadosSeparados = dadosDisciplina.split(",");
-                disciplina = new Disciplina();
-                disciplina.setNome(dadosSeparados[0]);
-                disciplina.setCodigo(dadosSeparados[1]);
-                disciplina.setCurso(dadosSeparados[2]);
-                disciplina.setTurma(dadosSeparados[3]);
-                disciplina.setTurno(dadosSeparados[4]);
-                arrayListDisciplinas.add(disciplina);
-                Log.e("ControllerDisciplinas", "loadDisciplinas(): disciplina: " + disciplina.toString());
+                if (!dadosDisciplina.equals("")) {
+                    dadosSeparados = dadosDisciplina.split(",");
+                    disciplina = new Disciplina();
+                    disciplina.setNome(dadosSeparados[0]);
+                    disciplina.setCodigo(dadosSeparados[1]);
+                    disciplina.setCurso(dadosSeparados[2]);
+                    disciplina.setTurma(dadosSeparados[3]);
+                    disciplina.setTurno(dadosSeparados[4]);
+                    arrayListDisciplinas.add(disciplina);
+                    Log.e("ControllerDisciplinas", "loadDisciplinas(): disciplina: " + disciplina.toString());
+                }
             }
 
             leitorDeArquivo.close();
