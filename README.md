@@ -19,6 +19,14 @@ Capface Android App - class attendance via facial recognition
 * [relatorio_final_funcionamento_server.pdf](https://github.com/biesseck/capface_android_app/blob/main/doc/relatorio_final_funcionamento_server.pdf)
 
 
+# Ferramentas
+* Android Studio
+
+# Dependências
+* [CapFace Server](https://github.com/biesseck/capface_server)
+
+* [Face Recognition Module](https://github.com/biesseck/capface_face_recognition_module)
+
 # Equipe
 * Bernardo Janko Gonçalves Biesseck (_Professor orientador - IFMT campus Pontes e Lacerda_)
 
