@@ -20,15 +20,15 @@ Capface Android App - class attendance via facial recognition
 
 
 # Equipe
-* Bernardo Janko Gonçalves Biesseck
+* Bernardo Janko Gonçalves Biesseck (_Professor orientador - IFMT campus Pontes e Lacerda_)
 
-* Esdras Júnior de Souza Moura
+* Esdras Júnior de Souza Moura (_Curso Técnico em Informática Integrado ao Ensino Médio - IFMT campus Pontes e Lacerda_)
 
-* Hellen Tamara Santana Silva
+* Hellen Tamara Santana Silva (_Curso Técnico em Informática Integrado ao Ensino Médio - IFMT campus Pontes e Lacerda_)
 
-* Mateus Quintino Oliveira Santos
+* Mateus Quintino Oliveira Santos (_Curso Técnico em Informática Integrado ao Ensino Médio - IFMT campus Pontes e Lacerda_)
 
-* Leuri Rabelo Zanetti
+* Leuri Rabelo Zanetti (_Curso Superior de Tecnologia em Redes de Computadores - IFMT campus Pontes e Lacerda_)
 
 ![team_image1](https://github.com/biesseck/capface_android_app/blob/main/doc/equipe1.jpg?raw=true)
 ![team_image2](https://github.com/biesseck/capface_android_app/blob/main/doc/equipe2.jpg?raw=true)
